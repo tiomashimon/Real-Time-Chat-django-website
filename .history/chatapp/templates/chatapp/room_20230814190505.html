@@ -1,0 +1,15 @@
+{{ chatroom.name }}
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Enter message">
+    <button type="submit">Send</button>
+</form>
+
+{{ chatroom.slug|json_script:"json-chatroomname" }}
+
+<script>
+    const chatRoomName = JSON.parse(document.getElementById('json-chatroomname').textContent)
+    const chatSocket = WebSocket(
+        ''
+    )
+</script>

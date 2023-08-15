@@ -1,0 +1,53 @@
+{{ chatroom.name }}
+{{ request.user.username }}
+<form method="post">
+    {% csrf_token %}
+    <input id='message-input' type="text" name="message" placeholder="Enter message">
+    <button id='send-button' type="submit">Send</button>
+</form>
+
+{{ chatroom.slug|json_script:"json-chatroomname" }}
+{{ request.user.username|json_script:"json-username"  }}
+
+
+<script>
+    const chatRoomName = JSON.parse(document.getElementById('json-chatroomname').textContent)
+    const username = JSON.parse(document.getElementById('json-username').textContent)
+
+    const chatSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/' + chatRoomName + '/'
+);
+
+
+    chatSocket.onmessage= function(e){
+        // console.log('This is message')
+        const data = JSON.parse(e.data)
+        if(data.message){
+            console.log('Reveived message to client is', data.message)
+            let html = data.username + ' : ' + data.message + "<br>"
+            
+
+        }else{
+            alert ('The message was empty')
+        }
+        
+    }
+    chatSocket.onclose= function(e){
+        console.log('Socket closed')
+    }
+
+    document.getElementById('send-button').onclick = function(e){
+        e.preventDefault()
+        const messageInput = document.getElementById('message-input')
+        const message = messageInput.value
+        console.log(username + ' said ' + message)
+
+        chatSocket.send(JSON.stringify({
+            'message':message,
+            'username':username,
+            'room':chatRoomName
+        }))
+        messageInput.value = ''
+
+    }
+</script>
