@@ -39,8 +39,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        await self.save_message(username,room,message)
-
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
@@ -52,10 +50,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'room': room
         }))
     
-    @sync_to_async
-    def save_message(self, username, room, message):
+    def save_message(self, username, room, message)
 
-        user = User.objects.get(username=username)
-        room = ChatRoom.objects.get(slug=room)
-
-        ChatMessage.objects.create(user=user, room=room, message_content=message)
+    user = user.objects.get(username=username)
+    room = ChatRoom.objects.get(slug=room)
+ user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+    message_content = models.TextField()
+    date = models.DateTimeField(auto_now=True)
+    ChatMessage.objects.create(user=user, room=room)

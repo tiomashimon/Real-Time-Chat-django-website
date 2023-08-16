@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1>{{ chatroom.name }} </h1>
+        <h1>{{ chatroom.name } </h1>
 
         <div id="chat-messages" class="border p-3 mt-3" style="max-height: 300px; overflow-y: scroll;">
             {% for message in messages %}
@@ -40,46 +40,42 @@
     'ws://' + window.location.host + '/ws/' + chatRoomName + '/'
 );
 
-    function scrollToBottom() {
-        const chatMessages = document.getElementById('chat-messages');
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    chatSocket.onmessage= function(e){
+        // console.log('This is message')
+        const data = JSON.parse(e.data)
+        if(data.message){
+            console.log('Reveived message to client is', data.message)
+            let html =  '<strong>' + data.username + '</strong>' + ' : ' + data.message + "<br>"
+            document.getElementById('chat-messages').innerHTML += html
+
+
+        }else{
+            alert ('The message was empty')
+        }
+        
+    }
+    chatSocket.onclose= function(e){
+        console.log('Socket closed')
     }
 
-    chatSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        if (data.message) {
-            const html = '<strong>' + data.username + '</strong>' + ' : ' + data.message + "<br>";
-            document.getElementById('chat-messages').innerHTML += html;
-            scrollToBottom();
-        } else {
-            alert('The message was empty');
-        }
-    };
-
-    chatSocket.onclose = function(e) {
-        console.log('Socket closed');
-    };
-
-    document.getElementById('send-button').onclick = function(e) {
-        e.preventDefault();
-        const messageInput = document.getElementById('message-input');
-        const message = messageInput.value;
+    document.getElementById('send-button').onclick = function(e){
+        e.preventDefault()
+        const messageInput = document.getElementById('message-input')
+        const message = messageInput.value
+        console.log(username + ' said ' + message)
 
         chatSocket.send(JSON.stringify({
-            'message': message,
-            'username': username,
-            'room': chatRoomName
-        }));
+            'message':message,
+            'username':username,
+            'room':chatRoomName
+        }))
+        messageInput.value = ''
 
-        messageInput.value = '';
-        scrollToBottom();
-    };
-
-    // Scroll to bottom when the page loads
-    window.onload = function() {
-        scrollToBottom();
-    };
+    }
 </script>
+
+
 
 </body>
 </html>

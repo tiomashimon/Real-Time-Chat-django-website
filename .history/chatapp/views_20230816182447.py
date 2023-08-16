@@ -9,5 +9,5 @@ def index(request):
 
 def chatroom(request, slug):
     chat_room = ChatRoom.objects.get(slug=slug)
-    messages = ChatMessage.objects.filter(room=chat_room)
-    return render(request, 'chatapp/room.html', {'chatroom': chat_room, 'messages':messages})
+    messages = CH
+    return render(request, 'chatapp/room.html', {'chatroom': chat_room})

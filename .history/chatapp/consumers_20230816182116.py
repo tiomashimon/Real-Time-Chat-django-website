@@ -39,7 +39,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        await self.save_message(username,room,message)
+        await self.save_message(user)
 
     async def chat_message(self, event):
         message = event['message']
